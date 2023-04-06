@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN" style="height: 100%;">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no" />
+    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"></script>
+    <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/jquery"></script>
+    <script type="text/javascript" src="func.js"></script>
+</head>
+
+<body style="height: 100%; margin: 0;">
+    <div id="container" style="height: 100%;"></div>
+
+    <script>
+        var dom = document.getElementById("container");
+        var myChart = echarts.init(dom, null, {
+            renderer: "canvas",
+            useDirtyRect: false
+        });
+        var app = {};
+        var option;
+
+        const upColor = "#ec0000";
+        const downColor = "#00da3c";
+        const upBorderColor = "#8A0000";
+        const downBorderColor = "#008F28";
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const symbol = getQueryString('symbol');
+            const klineJson = './json/' + symbol + '.json';
+            const orderJson = './json/' + symbol + '_order_insert.json';
+
+            $.getJSON(klineJson, function (data) {
+                $.getJSON(orderJson, function (rawOrderData) {
+                    setOption(data, rawOrderData);
+                }).fail(function () {
+                    setOption(data, null);
+                });
+            });
+        });
+
+        //////////////////////////////////////////////
+        // 处理数据开始
+
+        function setOption(rawKlineData, rawOrderData) {
+            // kline
+            var data = splitKlineData(rawKlineData["rows"]);
+            // 交易记录
+            var markPointData = [];
+            if(!$.isEmptyObject(rawOrderData)) {
+                markPointData = splitOrderData(rawOrderData["rows"], data);
+            }
+            
+            // 唐奇安通道
+            var dc = calculateDC(20, data);
+
+            option = {
+                animation: false,
+                legend: {
+                    top: "2%",
+                    data: ["K", "MA60", "HH", "LL", "CC", "EMA6", "EMA12"],
+                    selected: {
+                        HH: false,
+                        LL: false,
+                        CC: true
+                    }
+                },
+                tooltip: {
+                    trigger: "axis",
+                    axisPointer: {
+                        type: "cross",
+                        lineStyle: {
+                            color: "#376df4",
+                            width: 2
+                        }
+                    },
+                    formatter: function (params) {
+                        var ohlcvStr = "";
+                        var maStr = "指标<br/>";
+                        var atrStr = "";
+                        var lineStr = "";
+                        params.map((item, index) => {
+                            if (item.componentSubType == "candlestick") {
+                                const oclh = item.data;
+                                ohlcvStr += item.name + "<br/>";
+                                ohlcvStr += `开盘<span style='float:right'>${oclh[1]}</span><br/>`;
+                                ohlcvStr += `最高<span style='float:right'>${oclh[4]}</span><br/>`;
+                                ohlcvStr += `最低<span style='float:right'>${oclh[3]}</span><br/>`;
+                                ohlcvStr += `收盘<span style='float:right'>${oclh[2]}</span><br/>`;
+                                if (item.dataIndex - 1 >= 0) {
+                                    const prevClose = data.values[item.dataIndex - 1][1];
+                                    var p2 = ((oclh[2] - prevClose) / prevClose) * 100;
+                                    p2 = p2.toFixed(2);
+
+                                    ohlcvStr += `<span style='float:right'>${oclh[2] - prevClose}</span><br/>`;
+                                    ohlcvStr += `<span style='float:right'>${p2}%</span><br/>`;
+                                }
+                            } else if (item.componentSubType == "bar") {
+                                ohlcvStr += `成交量<span style='float:right'>${item.data}</span>`;
+                            } else if (item.componentSubType == "line") {
+                                if (item.seriesName == 'MA60') {
+                                    maStr += `${item.marker} ${item.seriesName}<span style='float:right'>${item.data}</span><br/>`;
+                                }
+                                else if (item.seriesName == 'ATR') {
+                                    atrStr += `${item.marker} ${item.seriesName}<span style='float:right'>${item.data}</span><br/>`;
+                                }
+                                else if(item.seriesName == '0.5' || item.seriesName == '-0.5') {
+                                }
+                                else {
+                                    lineStr += `${item.marker} ${item.seriesName}<span style='float:right'>${item.data}</span><br/>`;
+                                }
+                            }
+                        });
+                        const ret = ohlcvStr + "<br/>" + maStr + atrStr + lineStr;
+                        return ret;
+                    }
+                },
+                axisPointer: {
+                    link: { xAxisIndex: "all" },
+                    label: {
+                        //backgroundColor: "#777"
+                    }
+                },
+                grid: [
+                    {
+                        left: "5%",
+                        right: "5%",
+                        bottom: "24%"
+                    },
+                    {
+                        left: "5%",
+                        right: "5%",
+                        height: "6%",
+                        bottom: "15%"
+                    },
+                    {
+                        left: "5%",
+                        right: "5%",
+                        height: "6%",
+                        bottom: "8%"
+                    }
+                ],
+                xAxis: [
+                    {
+                        type: "category",
+                        data: data.categoryData,
+                        scale: true,
+                        axisLine: { onZero: false },
+                        splitLine: { show: false },
+                        min: "dataMin",
+                        max: "dataMax",
+                        axisPointer: {
+                            z: 100
+                        }
+                    },
+                    {
+                        type: "category",
+                        gridIndex: 1,
+                        data: data.categoryData,
+                        scale: true,
+                        axisLine: { onZero: false },
+                        axisTick: { show: false },
+                        splitLine: { show: false },
+                        axisLabel: { show: false },
+                        min: "dataMin",
+                        max: "dataMax",
+                        axisPointer: {
+                            label: {
+                                show: false,
+                                formatter: function (params) {
+                                    var seriesValue = (params.seriesData[0] || {}).value;
+                                    return echarts.format.addCommas(seriesValue);
+                                }
+                            }
+                        }
+                    },
+                    {
+                        type: "category",
+                        gridIndex: 2,
+                        data: data.categoryData,
+                        scale: true,
+                        axisLine: { onZero: false },
+                        axisTick: { show: false },
+                        splitLine: { show: false },
+                        axisLabel: { show: false },
+                        min: "dataMin",
+                        max: "dataMax",
+                        axisPointer: {
+                            label: {
+                                show: false,
+                                formatter: function (params) {
+                                    var seriesValue = (params.seriesData[0] || {}).value;
+                                    return echarts.format.addCommas(seriesValue);
+                                }
+                            }
+                        }
+                    }
+                ],
+                yAxis: [
+                    {
+                        scale: true,
+                        splitArea: {
+                            show: true
+                        },
+                        axisLabel: {
+                            inside: true
+                        }
+                    },
+                    {
+                        scale: true,
+                        gridIndex: 1,
+                        axisLabel: { show: false },
+                        axisLine: { show: false },
+                        axisTick: { show: false },
+                        splitLine: { show: false }
+                    },
+                    {
+                        scale: true,
+                        gridIndex: 2,
+                        axisLabel: { show: false },
+                        axisLine: { show: false },
+                        axisTick: { show: false },
+                        splitLine: { show: false }
+                    }
+                ],
+                dataZoom: [
+                    {
+                        type: "inside",
+                        xAxisIndex: [0, 1, 2],
+                        start: Math.floor((data.values.length - 30) / data.values.length * 100),
+                        end: 100
+                    },
+                    {
+                        show: true,
+                        xAxisIndex: [0, 1],
+                        type: "slider",
+                        bottom: "2%"
+                    }
+                ],
+                series: [
+                    {
+                        name: "kline",
+                        type: "candlestick",
+                        data: data.values,
+                        itemStyle: {
+                            color: null,
+                            color0: downColor,
+                            borderColor: upColor,
+                            borderColor0: downBorderColor,
+                            borderColorDoji: 'rgb(41,60,85)'
+                        },
+
+                        markPoint: {
+                            data: markPointData
+                        },
+                        markLine: {
+                            symbol: ["circle", "none"],
+                            label: {
+                                position: 'insideEndTop'
+                            },
+                            data: [
+                                {
+                                    type: "max",
+                                    valueDim: "highest",
+                                    lineStyle: {
+                                        color: '#ec0000',
+                                        width: 2
+                                    }
+                                },
+                                
+                                {
+                                    type: "min",
+                                    valueDim: "lowest",
+                                    lineStyle: {
+                                        color: '#00da3c',
+                                        width: 2
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        name: "Volume",
+                        type: "bar",
+                        xAxisIndex: 1,
+                        yAxisIndex: 1,
+                        data: data.volumes
+                    },
+                    {
+                        name: "MA60",
+                        type: "line",
+                        data: calculateMA(60, data),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 3,
+                            color: "rgb(51, 51, 51)"
+                        }
+                    },
+                    {
+                        name: "ATR",
+                        type: "line",
+                        xAxisIndex: 2,
+                        yAxisIndex: 2,
+                        data: calculateATR(15, data),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            color: "rgb(51, 51, 51)"
+                        }
+                    },
+                    {
+                        name: "HH",
+                        type: "line",
+                        data: dc.hh,
+                        smooth: true,
+                        lineStyle: {
+                            width: 1
+                        }
+                    },
+                    {
+                        name: "LL",
+                        type: "line",
+                        data: dc.ll,
+                        smooth: true,
+                        lineStyle: {
+                            width: 1
+                        }
+                    },
+                    {
+                        name: "CC",
+                        type: "line",
+                        data: dc.cc,
+                        smooth: true,
+                        lineStyle: {
+                            width: 1
+                        }
+                    },
+                    {
+                        name: "EMA6",
+                        type: "line",
+                        data: calculateEMA(6, data),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 1
+                        }
+                    },
+                    {
+                        name: "EMA12",
+                        type: "line",
+                        data: calculateEMA(12, data),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 1
+                        }
+                    },
+                    {
+                        name: "0.5",
+                        type: "line",
+                        data: calculateByATR(60, data, 15, 0.5),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            type: 'dashed',
+                            width: 3
+                        }
+                    },
+                    {
+                        name: "-0.5",
+                        type: "line",
+                        data: calculateByATR(60, data, 15, -0.5),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            type: 'dashed',
+                            width: 3
+                        }
+                    }
+                ]
+            };
+
+            myChart.setOption(option);
+        }
+
+        // 处理数据结束
+        //////////////////////////////////////////////
+        if (option && typeof option === "object") {
+            myChart.setOption(option);
+        }
+        window.addEventListener("resize", myChart.resize);
+
+
+        //////////////////////////////////////////////
+        // ====================函数==================
+
+        function getQueryString(name) {
+            let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            let r = window.location.search.substr(1).match(reg);
+            if (r != null) {
+                return decodeURIComponent(r[2]);
+            };
+            return null;
+        }
+
+        /// by atr
+        function calculateByATR(dayCount, data, atrDayCount, val) {
+            const maArr = calculateMA(dayCount, data);
+            const atrArr = calculateATR(atrDayCount, data);
+
+            var result = [];
+            for (var i = 0, len = maArr.length; i < len; i++) {
+                if (i < dayCount) {
+                    result.push("-");
+                    continue;
+                }
+                const ma = maArr[i];
+                const atr = atrArr[i];
+
+                const r = ma * 1 + atr * 1 * val;
+
+                result.push(r.toFixed(2));
+            }
+            return result;
+        }
+
+      //////////////////////////////////////////////
+      // ====================End==================
+    </script>
+</body>
+
+</html>
