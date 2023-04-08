@@ -29,8 +29,13 @@
         document.addEventListener('DOMContentLoaded', (event) => {
             const symbol = getQueryString('symbol');
             const t = getQueryString('t');
+            const e = getQueryString('e');
+
             const klineJson = './json/' + t + '/' + symbol + '.json';
-            const orderJson = './json/' + t + '/'+ symbol + '_order_insert.json';
+            var orderJson = './json/order_insert/' + symbol + '_' + t + '_order_insert.json';
+            if(e == 'bt') {
+                   orderJson = './json/order_insert/' + symbol + '_' + e + '_order_insert.json';
+            }
 
             $.getJSON(klineJson, function (data) {
                 $.getJSON(orderJson, function (rawOrderData) {
