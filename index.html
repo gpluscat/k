@@ -29,8 +29,8 @@
         document.addEventListener('DOMContentLoaded', (event) => {
             const symbol = getQueryString('symbol');
             const t = getQueryString('t');
-            const klineJson = './json/' + symbol + '_' + t + '.json';
-            const orderJson = './json/' + symbol + '_order_insert.json';
+            const klineJson = './json/' + t + '/' + symbol + '.json';
+            const orderJson = './json/' + t + '/'+ symbol + '_order_insert.json';
 
             $.getJSON(klineJson, function (data) {
                 $.getJSON(orderJson, function (rawOrderData) {
