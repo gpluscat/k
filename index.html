@@ -32,9 +32,9 @@
             const e = getQueryString('e');
 
             const klineJson = './json/' + t + '/' + symbol + '.json';
-            var orderJson = './json/order_insert/' + symbol + '_' + t + '_order_insert.json';
+            var orderJson = './json/order_insert/' + symbol +  '_' + t + '_order_insert.json';
             if(e == 'bt') {
-                   orderJson = './json/order_insert/' + symbol + '_' + e + '_order_insert.json';
+                 orderJson = './json/order_insert/bt/' + symbol + '_order_insert.json';
             }
 
             $.getJSON(klineJson, function (data) {
