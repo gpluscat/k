@@ -35,7 +35,7 @@ function splitOrderData(rawData, data) {
         const cIdx = data.categoryData.indexOf(coordX);
         if (cIdx != -1) {
             const oclh = data.values[cIdx];
-            coordY = oclh[2] - 25;
+            coordY = oclh[2];
         }
 
         // 不存在
@@ -47,11 +47,11 @@ function splitOrderData(rawData, data) {
             const cIdx = data.categoryData.indexOf(coordX);
             if (cIdx != -1) {
                 const oclh = data.values[cIdx];
-                coordY = oclh[2] - 25 - 45;
+                coordY = oclh[2] - 15;
             }
 
             if (coordYCount != 1) {
-                coordY -= (coordYCount - 1) * 30;
+                coordY -= (coordYCount - 1) * 15;
             }
         }
 

@@ -28,13 +28,15 @@
 
         document.addEventListener('DOMContentLoaded', (event) => {
             const symbol = getQueryString('symbol');
-            const t = getQueryString('t');
-            const e = getQueryString('e');
-
+            var t = getQueryString('t');
+            if(t == null) t = '1m';
+        
             const klineJson = './json/' + t + '/' + symbol + '.json';
             var orderJson = './json/order_insert/' + symbol +  '_' + t + '_order_insert.json';
+
+            const e = getQueryString('e');
             if(e == 'bt') {
-                 orderJson = './json/order_insert/bt/' + symbol + '_order_insert.json';
+                orderJson = './json/order_insert/bt/' + symbol + '_order_insert.json';
             }
 
             $.getJSON(klineJson, function (data) {
@@ -370,8 +372,8 @@
                         smooth: true,
                         showSymbol: false,
                         lineStyle: {
-                            type: 'dashed',
-                            width: 3
+                            //type: 'dashed',
+                            width: 2
                         }
                     },
                     {
@@ -381,8 +383,8 @@
                         smooth: true,
                         showSymbol: false,
                         lineStyle: {
-                            type: 'dashed',
-                            width: 3
+                            //type: 'dashed',
+                            width: 2
                         }
                     }
                 ]
