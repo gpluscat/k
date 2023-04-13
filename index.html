@@ -30,12 +30,16 @@
             const symbol = getQueryString('symbol');
             var t = getQueryString('t');
             if(t == null) t = '1m';
-        
+            const e = getQueryString('e');
+            var o = getQueryString('o');
+            if(o == null) {
+                o = true;
+            }
+            
             const klineJson = './json/' + t + '/' + symbol + '.json';
             const avgJson   = './json/' + t + '/' + symbol + '_avg.json';
             var orderJson   = './json/order_insert/' + symbol +  '_' + t + '_order_insert.json';
 
-            const e = getQueryString('e');
             if(e == 'bt') {
                 orderJson = './json/order_insert/bt/' + symbol + '_order_insert.json';
             }
@@ -51,10 +55,13 @@
                 }).fail(function () {
                 });
 
-                $.getJSON(orderJson, function (rawOrderData) {
-                    orderData = rawOrderData;
-                }).fail(function () {
-                });
+                if(o == true) {
+                    $.getJSON(orderJson, function (rawOrderData) {
+                        orderData = rawOrderData;
+                    }).fail(function () {
+                    });
+                }
+                
 
                 $.ajaxSettings.async = true;  //设为异步请求
 
