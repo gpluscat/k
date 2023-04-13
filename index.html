@@ -71,7 +71,10 @@
                     selected: {
                         HH: false,
                         LL: false,
-                        CC: true
+                        CC: true,
+
+                        EMA6: false,
+                        EMA12: false
                     }
                 },
                 tooltip: {
@@ -113,7 +116,8 @@
                                 else if (item.seriesName == 'ATR') {
                                     atrStr += `${item.marker} ${item.seriesName}<span style='float:right'>${item.data}</span><br/>`;
                                 }
-                                else if(item.seriesName == '0.5' || item.seriesName == '-0.5') {
+                                else if(item.seriesName == '0.6' || item.seriesName == '-0.6') {
+                                    maStr += `<span style='float:right'>${item.data}</span><br/>`;
                                 }
                                 else {
                                     lineStr += `${item.marker} ${item.seriesName}<span style='float:right'>${item.data}</span><br/>`;
@@ -236,7 +240,7 @@
                     {
                         type: "inside",
                         xAxisIndex: [0, 1, 2],
-                        start: Math.floor((data.values.length - 30) / data.values.length * 100),
+                        start: Math.floor((data.values.length - 120) / data.values.length * 100),
                         end: 100
                     },
                     {
@@ -366,9 +370,9 @@
                         }
                     },
                     {
-                        name: "0.5",
+                        name: "0.6",
                         type: "line",
-                        data: calculateByATR(60, data, 15, 0.5),
+                        data: calculateByATR(60, data, 15, 0.6),
                         smooth: true,
                         showSymbol: false,
                         lineStyle: {
@@ -377,9 +381,9 @@
                         }
                     },
                     {
-                        name: "-0.5",
+                        name: "-0.6",
                         type: "line",
-                        data: calculateByATR(60, data, 15, -0.5),
+                        data: calculateByATR(60, data, 15, -0.6),
                         smooth: true,
                         showSymbol: false,
                         lineStyle: {
