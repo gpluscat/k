@@ -32,7 +32,8 @@
             if(t == null) t = '1m';
         
             const klineJson = './json/' + t + '/' + symbol + '.json';
-            var orderJson = './json/order_insert/' + symbol +  '_' + t + '_order_insert.json';
+            const avgJson   = './json/' + t + '/' + symbol + '_avg.json';
+            var orderJson   = './json/order_insert/' + symbol +  '_' + t + '_order_insert.json';
 
             const e = getQueryString('e');
             if(e == 'bt') {
@@ -40,20 +41,40 @@
             }
 
             $.getJSON(klineJson, function (data) {
-                $.getJSON(orderJson, function (rawOrderData) {
-                    setOption(data, rawOrderData);
+                $.ajaxSettings.async = false;  //设为同步请求
+
+                var avgData  = null;
+                var orderData = null;
+
+                $.getJSON(avgJson, function (rawAvgData) {
+                    avgData = rawAvgData;
                 }).fail(function () {
-                    setOption(data, null);
                 });
+
+                $.getJSON(orderJson, function (rawOrderData) {
+                    orderData = rawOrderData;
+                }).fail(function () {
+                });
+
+                $.ajaxSettings.async = true;  //设为异步请求
+
+                setOption(data, avgData, orderData);
+                
             });
         });
 
         //////////////////////////////////////////////
         // 处理数据开始
 
-        function setOption(rawKlineData, rawOrderData) {
+        function setOption(rawKlineData, rawAvgData, rawOrderData) {
             // kline
             var data = splitKlineData(rawKlineData["rows"]);
+
+            var avgData = [];
+            if(!$.isEmptyObject(rawAvgData)) {
+                avgData = splitAvgData(rawAvgData["rows"])
+            }
+            
             // 交易记录
             var markPointData = [];
             if(!$.isEmptyObject(rawOrderData)) {
@@ -390,7 +411,17 @@
                             //type: 'dashed',
                             width: 2
                         }
-                    }
+                    },
+                    {
+                        name: "avg",
+                        type: "line",
+                        data: avgData,
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 1
+                        }
+                    },
                 ]
             };
 
