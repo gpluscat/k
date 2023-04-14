@@ -20,15 +20,6 @@ function splitKlineData(rawData) {
     };
 }
 
-function splitAvgData(rawData) {
-    var values = [];
-    for (var i = 0; i < rawData.length; i++) {
-        var item = rawData[i];
-        values.push(item[1]);
-    }
-    return values;
-}
-
 // 交易记录
 function splitOrderData(rawData, data) {
     var values = [];
