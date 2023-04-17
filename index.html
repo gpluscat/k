@@ -28,19 +28,28 @@
 
         document.addEventListener('DOMContentLoaded', (event) => {
             const symbol = getQueryString('symbol');
+            //周期
             var t = getQueryString('t');
             if(t == null) t = '1m';
 
+            //是否显示order
             var o = getQueryString('o');
-            if(o == null) o = true;
-            
+            if(o == null) o = '1';
+
+            //kline
             const klineJson = './json/' + t + '/' + symbol + '.json';
-            const orderJson   = './json/order_insert/' + symbol + '_order_insert.json';
+
+            //order
+            var orderJson = './json/order_insert/';
+            var bt = getQueryString('bt');
+            if(bt != null && bt == '1')
+                orderJson += 'bt/';
+            orderJson += symbol + '_order_insert.json';
 
             $.getJSON(klineJson, function (data) {
                 $.ajaxSettings.async = false;  //设为同步请求
                 var orderData = null;
-                if(o == true) {
+                if(o == '1') {
                     $.getJSON(orderJson, function (rawOrderData) {
                         orderData = rawOrderData;
                     }).fail(function () {
@@ -185,7 +194,7 @@
                         max: "dataMax",
                         axisPointer: {
                             label: {
-                                show: false,
+                                show: true,
                                 formatter: function (params) {
                                     var seriesValue = (params.seriesData[0] || {}).value;
                                     return echarts.format.addCommas(seriesValue);
@@ -206,7 +215,7 @@
                         max: "dataMax",
                         axisPointer: {
                             label: {
-                                show: false,
+                                show: true,
                                 formatter: function (params) {
                                     var seriesValue = (params.seriesData[0] || {}).value;
                                     return echarts.format.addCommas(seriesValue);
@@ -325,6 +334,7 @@
                         smooth: true,
                         showSymbol: false,
                         lineStyle: {
+                            width: 1,
                             color: "rgb(51, 51, 51)"
                         }
                     },
