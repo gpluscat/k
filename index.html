@@ -96,7 +96,7 @@
                 animation: false,
                 legend: {
                     top: "2%",
-                    data: ["K", "MA60", "HH", "LL", "CC", "EMA6", "EMA12"],
+                    data: ["K", "MA60", "HH", "LL", "CC", "EMA6", "EMA12", "EMA25"],
                     selected: {
                         HH: false,
                         LL: false,
@@ -401,7 +401,17 @@
                         }
                     },
                     {
-                        name: "0.6",
+                        name: "EMA25",
+                        type: "line",
+                        data: calculateEMA(30, data),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 1
+                        }
+                    },
+                    {
+                        name: "1",
                         type: "line",
                         data: calculateByATR(60, data, 15, 1),
                         smooth: true,
@@ -412,7 +422,7 @@
                         }
                     },
                     {
-                        name: "-0.6",
+                        name: "-1",
                         type: "line",
                         data: calculateByATR(60, data, 15, -1),
                         smooth: true,
