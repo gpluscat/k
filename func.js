@@ -236,3 +236,22 @@ function calculateDC(dayCount, data) {
     };
 }
 
+
+function calculateAvgPriceByATR(avgArr, data, dayCount, val) {
+    const atrArr = calculateATR(dayCount, data);
+
+    var result = [];
+    for (var i = 0, len = avgArr.length; i < len; i++) {
+        if (i < dayCount) {
+            result.push("-");
+            continue;
+        }
+        const avg = avgArr[i];
+        const atr = atrArr[i];
+
+        const r = avg * 1 + atr * 1 * val;
+
+        result.push(r.toFixed(2));
+    }
+    return result;
+}
