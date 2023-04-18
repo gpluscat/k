@@ -269,7 +269,7 @@
                     {
                         type: "inside",
                         xAxisIndex: [0, 1, 2],
-                        start: Math.floor((data.values.length - 120) / data.values.length * 100),
+                        start: Math.floor((data.values.length - 180) / data.values.length * 100),
                         end: 100
                     },
                     {
@@ -375,6 +375,7 @@
                         type: "line",
                         data: dc.cc,
                         smooth: true,
+                        showSymbol: false,
                         lineStyle: {
                             width: 1
                         }
@@ -402,58 +403,23 @@
                     {
                         name: "0.6",
                         type: "line",
-                        data: calculateByATR(60, data, 15, 0.6),
+                        data: calculateByATR(60, data, 15, 1),
                         smooth: true,
                         showSymbol: false,
                         lineStyle: {
-                            //type: 'dashed',
+                            type: 'dashed',
                             width: 2
                         }
                     },
                     {
                         name: "-0.6",
                         type: "line",
-                        data: calculateByATR(60, data, 15, -0.6),
+                        data: calculateByATR(60, data, 15, -1),
                         smooth: true,
                         showSymbol: false,
                         lineStyle: {
-                            //type: 'dashed',
+                            type: 'dashed',
                             width: 2
-                        }
-                    },
-                    {
-                        name: "avg",
-                        type: "line",
-                        data: avgData,
-                        smooth: true,
-                        showSymbol: false,
-                        lineStyle: {
-                            width: 1,
-                            color: "rgb(51, 51, 51)"
-                        }
-                    },
-                    {
-                        name: "avg",
-                        type: "line",
-                        data: calculateAvgPriceByATR(avgData, data, 15, 1),
-                        smooth: true,
-                        showSymbol: false,
-                        lineStyle: {
-                            type: 'dashed',
-                            width: 1,
-                            color: "rgb(51, 51, 51)"
-                        }
-                    },
-                    {
-                        name: "avg",
-                        type: "line",
-                        data: calculateAvgPriceByATR(avgData, data, 15, -1),
-                        smooth: true,
-                        showSymbol: false,
-                        lineStyle: {
-                            type: 'dashed',
-                            width: 1,
-                            color: "rgb(51, 51, 51)"
                         }
                     }
                 ]
