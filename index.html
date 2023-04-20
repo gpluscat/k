@@ -96,7 +96,7 @@
                 animation: false,
                 legend: {
                     top: "2%",
-                    data: ["K", "MA60",  "HH", "LL", "CC","EMA12", "EMA30", "avg"],
+                    data: ["K", "HH", "LL", "CC","EMA12", "EMA30"],
                     selected: {
                         HH: false,
                         LL: false,
@@ -119,6 +119,7 @@
                         var ohlcvStr = "";
                         var maStr = "指标<br/>";
                         var atrStr = "";
+                        var avgStr = "";
                         var lineStr = "";
                         params.map((item, index) => {
                             if (item.componentSubType == "candlestick") {
@@ -148,12 +149,18 @@
                                 else if(item.seriesName == '0.6' || item.seriesName == '-0.6') {
                                     maStr += `<span style='float:right'>${item.data}</span><br/>`;
                                 }
+                                else if (item.seriesName == 'avg') {
+                                    avgStr += `${item.marker} ${item.seriesName}<span style='float:right'>${item.data}</span><br/>`;
+                                }
+                                else if(item.seriesName == '1avg' || item.seriesName == '-1avg') {
+                                    avgStr += `<span style='float:right'>${item.data}</span><br/>`;
+                                }
                                 else {
                                     lineStr += `${item.marker} ${item.seriesName}<span style='float:right'>${item.data}</span><br/>`;
                                 }
                             }
                         });
-                        const ret = ohlcvStr + "<br/>" + maStr + atrStr + lineStr;
+                        const ret = ohlcvStr + "<br/>" + maStr  + avgStr + atrStr + lineStr;
                         return ret;
                     }
                 },
@@ -433,6 +440,7 @@
                         }
                     },
                     {
+                        name: "1avg",
                         type: "line",
                         data: calculateAvgPriceByATR(avgData, data, 15, 1),
                         smooth: true,
@@ -444,6 +452,7 @@
                         }
                     },
                     {
+                        name: "-1avg",
                         type: "line",
                         data: calculateAvgPriceByATR(avgData, data, 15, -1),
                         smooth: true,
