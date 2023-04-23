@@ -83,13 +83,11 @@
                 animation: false,
                 legend: {
                     top: "2%",
-                    data: ["K", "MA180", "MA120", "MA60", "HH", "LL", "CC", "AVG", "1", "-1"],
+                    data: ["K", "MA120", "MA60", "HH", "LL", "CC", "1", "-1"],
                     selected: {
                         HH: false,
                         LL: false,
-                        CC: false,
-
-                        AVG: false
+                        CC: false
                     }
                 },
                 tooltip: {
@@ -104,8 +102,9 @@
                     formatter: function (params) {
                         var ohlcvStr = "";
                         var maStr = "指标<br/>";
+
                         var atrStr = "";
-                        var avgStr = "";
+                        
                         var lineStr = "";
                         params.map((item, index) => {
                             if (item.componentSubType == "candlestick") {
@@ -126,27 +125,23 @@
                             } else if (item.componentSubType == "bar") {
                                 ohlcvStr += `成交量<span style='float:right'>${item.data}</span>`;
                             } else if (item.componentSubType == "line") {
-                                if (item.seriesName == 'MA60') {
+                                if (item.seriesName == 'MA120') {
+                                    maStr += `${item.marker} ${item.seriesName}<span style='float:right'>${item.data}</span><br/>`;
+                                } else if (item.seriesName == 'MA60') {
                                     maStr += `${item.marker} ${item.seriesName}<span style='float:right'>${item.data}</span><br/>`;
                                 }
                                 else if (item.seriesName == 'ATR') {
                                     atrStr += `${item.marker} ${item.seriesName}<span style='float:right'>${item.data}</span><br/>`;
                                 }
-                                else if(item.seriesName == '0.6' || item.seriesName == '-0.6') {
+                                else if(item.seriesName == '1' || item.seriesName == '-1') {
                                     maStr += `<span style='float:right'>${item.data}</span><br/>`;
-                                }
-                                else if (item.seriesName == 'avg') {
-                                    avgStr += `${item.marker} ${item.seriesName}<span style='float:right'>${item.data}</span><br/>`;
-                                }
-                                else if(item.seriesName == '1avg' || item.seriesName == '-1avg') {
-                                    avgStr += `<span style='float:right'>${item.data}</span><br/>`;
                                 }
                                 else {
                                     lineStr += `${item.marker} ${item.seriesName}<span style='float:right'>${item.data}</span><br/>`;
                                 }
                             }
                         });
-                        const ret = ohlcvStr + "<br/>" + maStr  + avgStr + atrStr + lineStr;
+                        const ret = ohlcvStr + "<br/>" + maStr  + atrStr + lineStr;
                         return ret;
                     }
                 },
@@ -320,16 +315,6 @@
                         xAxisIndex: 1,
                         yAxisIndex: 1,
                         data: data.volumes
-                    },
-                    {
-                        name: "MA180",
-                        type: "line",
-                        data: calculateMA(240, data),
-                        smooth: true,
-                        showSymbol: false,
-                        lineStyle: {
-                            width: 3
-                        }
                     },
                     {
                         name: "MA120",
