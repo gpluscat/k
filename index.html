@@ -38,7 +38,6 @@
 
             //kline
             const klineJson = './json/' + t + '/' + symbol + '.json';
-            const avgJson   = './json/' + t + '/' + symbol + '_avg.json';
             //order
             var orderJson = './json/order_insert/';
             var bt = getQueryString('bt');
@@ -49,14 +48,7 @@
             $.getJSON(klineJson, function (data) {
                 $.ajaxSettings.async = false;  //设为同步请求
 
-                var avgData  = null;
                 var orderData = null;
-
-                $.getJSON(avgJson, function (rawAvgData) {
-                    avgData = rawAvgData;
-                }).fail(function () {
-                });
-
                 if(o == '1') {
                     $.getJSON(orderJson, function (rawOrderData) {
                         orderData = rawOrderData;
@@ -66,7 +58,7 @@
 
                 $.ajaxSettings.async = true;  //设为异步请求
 
-                setOption(data, avgData, orderData);
+                setOption(data, orderData);
                 
             });
         });
@@ -74,14 +66,9 @@
         //////////////////////////////////////////////
         // 处理数据开始
 
-        function setOption(rawKlineData, rawAvgData, rawOrderData) {
+        function setOption(rawKlineData, rawOrderData) {
             // kline
             var data = splitKlineData(rawKlineData["rows"]);
-
-            var avgData = [];
-            if(!$.isEmptyObject(rawAvgData)) {
-                avgData = splitAvgData(rawAvgData["rows"])
-            }
 
             // 交易记录
             var markPointData = [];
@@ -427,42 +414,7 @@
                             width: 1,
                             color: "rgb(51, 51, 51)"
                         }
-                    },
-                    {
-                        name: "AVG",
-                        type: "line",
-                        data: avgData,
-                        smooth: true,
-                        showSymbol: false,
-                        lineStyle: {
-                            width: 2,
-                            color: "rgb(0, 132, 255)"
-                        }
-                    },
-                    // {
-                    //     name: "1avg",
-                    //     type: "line",
-                    //     data: calculateAvgPriceByATR(avgData, data, 15, 1),
-                    //     smooth: true,
-                    //     showSymbol: false,
-                    //     lineStyle: {
-                    //         width: 1,
-                    //         type: 'dashed',
-                    //         color: "rgb(51, 51, 51)"
-                    //     }
-                    // },
-                    // {
-                    //     name: "-1avg",
-                    //     type: "line",
-                    //     data: calculateAvgPriceByATR(avgData, data, 15, -1),
-                    //     smooth: true,
-                    //     showSymbol: false,
-                    //     lineStyle: {
-                    //         width: 1,
-                    //         type: 'dashed',
-                    //         color: "rgb(51, 51, 51)"
-                    //     }
-                    // },
+                    }
                 ]
             };
 
