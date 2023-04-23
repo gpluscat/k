@@ -96,11 +96,13 @@
                 animation: false,
                 legend: {
                     top: "2%",
-                    data: ["K", "MA60", "MA120", "HH", "LL", "CC", "AVG"],
+                    data: ["K", "MA180", "MA120", "MA60", "HH", "LL", "CC", "AVG", "1", "-1"],
                     selected: {
                         HH: false,
                         LL: false,
-                        CC: false
+                        CC: false,
+
+                        AVG: false
                     }
                 },
                 tooltip: {
@@ -333,14 +335,13 @@
                         data: data.volumes
                     },
                     {
-                        name: "MA60",
+                        name: "MA180",
                         type: "line",
-                        data: calculateMA(60, data),
+                        data: calculateMA(240, data),
                         smooth: true,
                         showSymbol: false,
                         lineStyle: {
-                            width: 3,
-                            color: "rgb(51, 51, 51)"
+                            width: 3
                         }
                     },
                     {
@@ -350,8 +351,18 @@
                         smooth: true,
                         showSymbol: false,
                         lineStyle: {
-                            width: 3,
-                            //color: "rgb(51, 51, 51)"
+                            width: 3
+                        }
+                    },
+                    {
+                        name: "MA60",
+                        type: "line",
+                        data: calculateMA(60, data),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 2,
+                            color: "rgb(51, 51, 51)"
                         }
                     },
                     {
@@ -395,28 +406,28 @@
                             width: 1
                         }
                     },
-                    // {
-                    //     name: "1",
-                    //     type: "line",
-                    //     data: calculateByATR(60, data, 15, 1),
-                    //     smooth: true,
-                    //     showSymbol: false,
-                    //     lineStyle: {
-                    //         type: 'dashed',
-                    //         width: 2
-                    //     }
-                    // },
-                    // {
-                    //     name: "-1",
-                    //     type: "line",
-                    //     data: calculateByATR(60, data, 15, -1),
-                    //     smooth: true,
-                    //     showSymbol: false,
-                    //     lineStyle: {
-                    //         type: 'dashed',
-                    //         width: 2
-                    //     }
-                    // },
+                    {
+                        name: "1",
+                        type: "line",
+                        data: calculateByATR(60, data, 15, 1),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 1,
+                            color: "rgb(51, 51, 51)"
+                        }
+                    },
+                    {
+                        name: "-1",
+                        type: "line",
+                        data: calculateByATR(60, data, 15, -1),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 1,
+                            color: "rgb(51, 51, 51)"
+                        }
+                    },
                     {
                         name: "AVG",
                         type: "line",
