@@ -20,16 +20,6 @@ function splitKlineData(rawData) {
     };
 }
 
-
-function splitAvgData(rawData) {
-    var values = [];
-    for (var i = 0; i < rawData.length; i++) {
-        var item = rawData[i];
-        values.push(item[1]);
-    }
-    return values;
-}
-
 // 交易记录
 function splitOrderData(rawData, data) {
     var values = [];
@@ -234,24 +224,4 @@ function calculateDC(dayCount, data) {
         ll: ll,
         cc: cc
     };
-}
-
-
-function calculateAvgPriceByATR(avgArr, data, dayCount, val) {
-    const atrArr = calculateATR(dayCount, data);
-
-    var result = [];
-    for (var i = 0, len = avgArr.length; i < len; i++) {
-        if (i < dayCount) {
-            result.push("-");
-            continue;
-        }
-        const avg = avgArr[i];
-        const atr = atrArr[i];
-
-        const r = avg * 1 + atr * 1 * val;
-
-        result.push(r.toFixed(2));
-    }
-    return result;
 }
