@@ -83,7 +83,7 @@
                 animation: false,
                 legend: {
                     top: "2%",
-                    data: ["K", "MA120", "MA60", "HH", "LL", "CC", "1", "-1"],
+                    data: ["K", "MA120", "MA60", "1x_atr", "-1x_atr"],
                     selected: {
                         HH: false,
                         LL: false,
@@ -133,7 +133,7 @@
                                 else if (item.seriesName == 'ATR') {
                                     atrStr += `${item.marker} ${item.seriesName}<span style='float:right'>${item.data}</span><br/>`;
                                 }
-                                else if(item.seriesName == '1' || item.seriesName == '-1') {
+                                else if(item.seriesName == '1x_atr' || item.seriesName == '-1x_atr') {
                                     maStr += `<span style='float:right'>${item.data}</span><br/>`;
                                 }
                                 else {
@@ -257,7 +257,7 @@
                     {
                         type: "inside",
                         xAxisIndex: [0, 1, 2],
-                        start: Math.floor((data.values.length - 180) / data.values.length * 100),
+                        start: Math.floor((data.values.length - 345) / data.values.length * 100),
                         end: 100
                     },
                     {
@@ -351,35 +351,7 @@
                         }
                     },
                     {
-                        name: "HH",
-                        type: "line",
-                        data: dc.hh,
-                        smooth: true,
-                        lineStyle: {
-                            width: 1
-                        }
-                    },
-                    {
-                        name: "LL",
-                        type: "line",
-                        data: dc.ll,
-                        smooth: true,
-                        lineStyle: {
-                            width: 1
-                        }
-                    },
-                    {
-                        name: "CC",
-                        type: "line",
-                        data: dc.cc,
-                        smooth: true,
-                        showSymbol: false,
-                        lineStyle: {
-                            width: 1
-                        }
-                    },
-                    {
-                        name: "1",
+                        name: "1x_atr",
                         type: "line",
                         data: calculateByATR(60, data, 15, 1),
                         smooth: true,
@@ -390,7 +362,7 @@
                         }
                     },
                     {
-                        name: "-1",
+                        name: "-1x_atr",
                         type: "line",
                         data: calculateByATR(60, data, 15, -1),
                         smooth: true,
