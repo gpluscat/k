@@ -84,7 +84,7 @@
                 animation: false,
                 legend: {
                     top: "2%",
-                    data: ["K", "MA120", "MA60", "1x_atr", "-1x_atr"],
+                    data: ["K", "MA120", "MA60","HH", "LL", "CC", "1x_atr", "-1x_atr"],
                     selected: {
                         HH: false,
                         LL: false,
@@ -352,6 +352,34 @@
                         }
                     },
                     {
+                        name: "HH",
+                        type: "line",
+                        data: dc.hh,
+                        smooth: true,
+                        lineStyle: {
+                            width: 1
+                        }
+                    },
+                    {
+                        name: "LL",
+                        type: "line",
+                        data: dc.ll,
+                        smooth: true,
+                        lineStyle: {
+                            width: 1
+                        }
+                    },
+                    {
+                        name: "CC",
+                        type: "line",
+                        data: dc.cc,
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 1
+                        }
+                    },
+                    {
                         name: "1x_atr",
                         type: "line",
                         data: calculateByATR(60, data, 15, 1),
@@ -366,17 +394,6 @@
                         name: "-1x_atr",
                         type: "line",
                         data: calculateByATR(60, data, 15, -1),
-                        smooth: true,
-                        showSymbol: false,
-                        lineStyle: {
-                            width: 1,
-                            color: "rgb(51, 51, 51)"
-                        }
-                    },
-                    {
-                        name: "ma120_1xatr",
-                        type: "line",
-                        data: calculateByATR(120, data, 15, -1),
                         smooth: true,
                         showSymbol: false,
                         lineStyle: {
