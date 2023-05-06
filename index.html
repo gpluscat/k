@@ -84,7 +84,7 @@
                 animation: false,
                 legend: {
                     top: "2%",
-                    data: ["K", "MA60", "HH", "LL", "CC", "1x_atr", "-1x_atr"],
+                    data: ["K", "MA60", "HH", "LL", "CC", "MA6"],
                     selected: {
                         HH: false,
                         LL: false,
@@ -126,16 +126,11 @@
                             } else if (item.componentSubType == "bar") {
                                 ohlcvStr += `成交量<span style='float:right'>${item.data}</span>`;
                             } else if (item.componentSubType == "line") {
-                                if (item.seriesName == 'MA120') {
-                                    maStr += `${item.marker} ${item.seriesName}<span style='float:right'>${item.data}</span><br/>`;
-                                } else if (item.seriesName == 'MA60') {
+                                if (item.seriesName == 'MA60') {
                                     maStr += `${item.marker} ${item.seriesName}<span style='float:right'>${item.data}</span><br/>`;
                                 }
                                 else if (item.seriesName == 'ATR') {
                                     atrStr += `${item.marker} ${item.seriesName}<span style='float:right'>${item.data}</span><br/>`;
-                                }
-                                else if(item.seriesName == '1x_atr' || item.seriesName == '-1x_atr') {
-                                    maStr += `<span style='float:right'>${item.data}</span><br/>`;
                                 }
                                 else {
                                     lineStr += `${item.marker} ${item.seriesName}<span style='float:right'>${item.data}</span><br/>`;
