@@ -31,7 +31,7 @@
             const symbol = getQueryString('symbol');
             //周期
             var t = getQueryString('t');
-            if(t == null) t = '1m';
+            if(t == null) t = '3m';
 
             //是否显示order
             var o = getQueryString('o');
@@ -84,7 +84,7 @@
                 animation: false,
                 legend: {
                     top: "2%",
-                    data: ["K", "MA120", "MA60","HH", "LL", "CC", "1x_atr", "-1x_atr"],
+                    data: ["K", "MA60", "HH", "LL", "CC", "1x_atr", "-1x_atr"],
                     selected: {
                         HH: false,
                         LL: false,
@@ -318,13 +318,16 @@
                         data: data.volumes
                     },
                     {
-                        name: "MA120",
+                        name: "ATR",
                         type: "line",
-                        data: calculateMA(120, data),
+                        xAxisIndex: 2,
+                        yAxisIndex: 2,
+                        data: calculateATR(15, data),
                         smooth: true,
                         showSymbol: false,
                         lineStyle: {
-                            width: 3
+                            width: 1,
+                            color: "rgb(51, 51, 51)"
                         }
                     },
                     {
@@ -339,11 +342,9 @@
                         }
                     },
                     {
-                        name: "ATR",
+                        name: "MA6",
                         type: "line",
-                        xAxisIndex: 2,
-                        yAxisIndex: 2,
-                        data: calculateATR(15, data),
+                        data: calculateMA(6, data),
                         smooth: true,
                         showSymbol: false,
                         lineStyle: {
@@ -377,28 +378,6 @@
                         showSymbol: false,
                         lineStyle: {
                             width: 1
-                        }
-                    },
-                    {
-                        name: "1x_atr",
-                        type: "line",
-                        data: calculateByATR(60, data, 15, 1),
-                        smooth: true,
-                        showSymbol: false,
-                        lineStyle: {
-                            width: 1,
-                            color: "rgb(51, 51, 51)"
-                        }
-                    },
-                    {
-                        name: "-1x_atr",
-                        type: "line",
-                        data: calculateByATR(60, data, 15, -1),
-                        smooth: true,
-                        showSymbol: false,
-                        lineStyle: {
-                            width: 1,
-                            color: "rgb(51, 51, 51)"
                         }
                     }
                 ]
