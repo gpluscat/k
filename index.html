@@ -84,7 +84,7 @@
                 animation: false,
                 legend: {
                     top: "2%",
-                    data: ["K", "MA60", "HH", "LL", "CC", "MA6"],
+                    data: ["K", "MA60", "MA6","HH", "LL", "CC"],
                     selected: {
                         HH: false,
                         LL: false,
@@ -313,6 +313,17 @@
                         data: data.volumes
                     },
                     {
+                        name: "MA60",
+                        type: "line",
+                        data: calculateMA(60, data),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 2,
+                            color: "rgb(51, 51, 51)"
+                        }
+                    },
+                    {
                         name: "ATR",
                         type: "line",
                         xAxisIndex: 2,
@@ -322,17 +333,6 @@
                         showSymbol: false,
                         lineStyle: {
                             width: 1,
-                            color: "rgb(51, 51, 51)"
-                        }
-                    },
-                    {
-                        name: "MA60",
-                        type: "line",
-                        data: calculateMA(60, data),
-                        smooth: true,
-                        showSymbol: false,
-                        lineStyle: {
-                            width: 2,
                             color: "rgb(51, 51, 51)"
                         }
                     },
