@@ -31,17 +31,15 @@
             const symbol = getQueryString('symbol');
             //周期
             var t = getQueryString('t');
-            if(t == null) t = '3m';
-
-            //是否显示order
             var o = getQueryString('o');
-            if(o == null) o = '1';
+
+            var bt = getQueryString('bt');
 
             //kline
             const klineJson = './json/' + t + '/' + symbol + '.json';
             //order
             var orderJson = './json/order_insert/';
-            var bt = getQueryString('bt');
+            
             if(bt != null && bt == '1')
                 orderJson += 'bt/';
             orderJson += symbol + '_order_insert.json';
@@ -60,7 +58,6 @@
                 $.ajaxSettings.async = true;  //设为异步请求
 
                 setOption(data, orderData);
-                
             });
         });
 
