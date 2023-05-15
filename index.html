@@ -81,7 +81,7 @@
                 animation: false,
                 legend: {
                     top: "2%",
-                    data: ["K", "MA60", "HH", "LL", "CC", "MA6"],
+                    data: ["K", "MA60", "HH", "LL", "CC", "MA6", "MA120"],
                     selected: {
                         HH: false,
                         LL: false,
@@ -370,6 +370,16 @@
                         lineStyle: {
                             width: 1,
                             color: "rgb(51, 51, 51)"
+                        }
+                    },
+                    {
+                        name: "MA120",
+                        type: "line",
+                        data: calculateMA(120, data),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 1
                         }
                     }
                     
