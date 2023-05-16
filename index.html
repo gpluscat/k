@@ -2,7 +2,7 @@
 <html lang="zh-CN" style="height: 100%;">
 
 <head>
-    <!-- http://192.168.1.10:5500/index.html?symbol=TA309&bt=1 -->
+    <!-- http://192.168.1.10:5500/index.html?symbol=TA309&t=3m&o=1&bt=1 -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no" />
     <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"></script>
@@ -81,17 +81,15 @@
                 animation: false,
                 legend: {
                     top: "2%",
-                    data: ["K", "MA60", "HH", "LL", "CC", "MA6", "MA120"],
+                    data: ["K", "MA60", "CC", "MA6", "MA120"],
                     selected: {
-                        HH: false,
-                        LL: false,
                         CC: false
                     }
                 },
                 tooltip: {
                     trigger: "axis",
                     position(pos, params, el, elRect, size) {
-                        return {left: 0, top: '8%'};
+                        return {left: 0, top: '10%'};
                     },
                     axisPointer: {
                         type: "cross",
@@ -337,24 +335,6 @@
                         }
                     },
                     {
-                        name: "HH",
-                        type: "line",
-                        data: dc.hh,
-                        smooth: true,
-                        lineStyle: {
-                            width: 1
-                        }
-                    },
-                    {
-                        name: "LL",
-                        type: "line",
-                        data: dc.ll,
-                        smooth: true,
-                        lineStyle: {
-                            width: 1
-                        }
-                    },
-                    {
                         name: "CC",
                         type: "line",
                         data: dc.cc,
@@ -379,6 +359,24 @@
                         name: "MA120",
                         type: "line",
                         data: calculateMA(120, data),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 1
+                        }
+                    },
+                    {
+                        type: "line",
+                        data: calculateByATR(60, data, 15, 1),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 1
+                        }
+                    },
+                    {
+                        type: "line",
+                        data: calculateByATR(60, data, 15, -1),
                         smooth: true,
                         showSymbol: false,
                         lineStyle: {
@@ -414,7 +412,7 @@
 
         /// by atr
         function calculateByATR(dayCount, data, atrDayCount, val) {
-            const maArr = calculateMA(dayCount, data);
+            const maArr  = calculateMA(dayCount, data);
             const atrArr = calculateATR(atrDayCount, data);
 
             var result = [];
