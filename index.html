@@ -81,7 +81,7 @@
                 animation: false,
                 legend: {
                     top: "2%",
-                    data: ["K", "MA60", "CC", "MA6", "MA120"],
+                    data: ["K", "MA60", "MA120", "CC"],
                     selected: {
                         CC: false
                     }
@@ -100,8 +100,7 @@
                     },
                     formatter: function (params) {
                         var ohlcvStr = "";
-                        var maStr = "指标<br/>";
-
+                        var maStr = "";
                         var atrStr = "";
                         
                         var lineStr = "";
@@ -124,18 +123,20 @@
                             } else if (item.componentSubType == "bar") {
                                 ohlcvStr += `成交量<span style='float:right'>${item.data}</span>`;
                             } else if (item.componentSubType == "line") {
-                                if (item.seriesName == 'MA60' || item.seriesName == 'MA6') {
+                                if (item.seriesName == 'ATR') {
+                                    atrStr += `${item.marker} ${item.seriesName}<span style='float:right'>${item.data}</span><br/>`;
+                                }
+                                else if (item.seriesName == 'MA60' || item.seriesName == 'MA120') {
                                     maStr += `${item.marker} ${item.seriesName}<span style='float:right'>${item.data}</span><br/>`;
                                 }
-                                else if (item.seriesName == 'ATR') {
-                                    atrStr += `${item.marker} ${item.seriesName}<span style='float:right'>${item.data}</span><br/>`;
+                                else if (item.seriesName == 'MA6' || item.seriesName == '0.5atr' || item.seriesName == '-0.5atr') {
                                 }
                                 else {
                                     lineStr += `${item.marker} ${item.seriesName}<span style='float:right'>${item.data}</span><br/>`;
                                 }
                             }
                         });
-                        const ret = ohlcvStr + "<br/>" + maStr  + atrStr + lineStr;
+                        const ret = ohlcvStr + "<br/>" + '指标<br/>' + atrStr + maStr + lineStr;
                         return ret;
                     }
                 },
@@ -324,14 +325,35 @@
                         }
                     },
                     {
+                        name: "MA6",
+                        type: "line",
+                        data: calculateEMA(6, data),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 1,
+                            color: "rgb(51, 51, 51)"
+                        }
+                    },
+                    {
                         name: "MA60",
                         type: "line",
-                        data: calculateMA(60, data),
+                        data: calculateEMA(60, data),
                         smooth: true,
                         showSymbol: false,
                         lineStyle: {
                             width: 2,
                             color: "rgb(51, 51, 51)"
+                        }
+                    },
+                    {
+                        name: "MA120",
+                        type: "line",
+                        data: calculateEMA(120, data),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 2
                         }
                     },
                     {
@@ -345,29 +367,9 @@
                         }
                     },
                     {
-                        name: "MA6",
+                        name: "0.5atr",
                         type: "line",
-                        data: calculateMA(6, data),
-                        smooth: true,
-                        showSymbol: false,
-                        lineStyle: {
-                            width: 1,
-                            color: "rgb(51, 51, 51)"
-                        }
-                    },
-                    {
-                        name: "MA120",
-                        type: "line",
-                        data: calculateMA(120, data),
-                        smooth: true,
-                        showSymbol: false,
-                        lineStyle: {
-                            width: 2
-                        }
-                    },
-                    {
-                        type: "line",
-                        data: calculateByATR(60, data, 15, 1),
+                        data: calculateByATR(60, data, 15, 0.5),
                         smooth: true,
                         showSymbol: false,
                         lineStyle: {
@@ -376,8 +378,9 @@
                         }
                     },
                     {
+                        name: "-0.5atr",
                         type: "line",
-                        data: calculateByATR(60, data, 15, -1),
+                        data: calculateByATR(60, data, 15, -0.5),
                         smooth: true,
                         showSymbol: false,
                         lineStyle: {
@@ -385,7 +388,6 @@
                             type: 'dotted'
                         }
                     }
-                    
                 ]
             };
 
@@ -414,7 +416,7 @@
 
         /// by atr
         function calculateByATR(dayCount, data, atrDayCount, val) {
-            const maArr  = calculateMA(dayCount, data);
+            const maArr  = calculateEMA(dayCount, data);
             const atrArr = calculateATR(atrDayCount, data);
 
             var result = [];
