@@ -75,18 +75,16 @@
             }
             
             // 唐奇安通道
-            //var dc = calculateDC(20, data);
+            var dc = calculateDC(20, data);
 
             option = {
                 animation: false,
                 legend: {
                     top: "2%",
-                    data: ["K", "MA60", "MA120"],
-                    /*
+                    data: ["K", "MA60", "MA120", "CC"],
                     selected: {
                         CC: false
                     }
-                    */
                 },
                 tooltip: {
                     trigger: "axis",
@@ -358,7 +356,6 @@
                             width: 2
                         }
                     },
-                    /*
                     {
                         name: "CC",
                         type: "line",
@@ -369,7 +366,6 @@
                             width: 1
                         }
                     },
-                    */
                     {
                         name: "0.5atr",
                         type: "line",
