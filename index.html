@@ -81,13 +81,13 @@
                 animation: false,
                 legend: {
                     top: "2%",
-                    data: ["K", "MA60","MA120","HH", "LL", "CC", "MA5", "MA12"],
+                    data: ["K", "MA60","MA120","CC", "MA5", "MA12", "MA30"],
                     selected: {
-                        HH: false,
-                        LL: false,
                         CC: false,
 
-                        MA5: false
+                        MA5: true,
+                        MA12: false,
+                        MA30: false
                     }
                 },
                 tooltip: {
@@ -350,26 +350,6 @@
                         }
                     },
                     {
-                        name: "HH",
-                        type: "line",
-                        data: dc.hh,
-                        smooth: true,
-                        showSymbol: false,
-                        lineStyle: {
-                            width: 1
-                        }
-                    },
-                    {
-                        name: "LL",
-                        type: "line",
-                        data: dc.ll,
-                        smooth: true,
-                        showSymbol: false,
-                        lineStyle: {
-                            width: 1
-                        }
-                    },
-                    {
                         name: "CC",
                         type: "line",
                         data: dc.cc,
@@ -393,6 +373,16 @@
                         name: "MA12",
                         type: "line",
                         data: calculateEMA(12, data),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 1
+                        }
+                    },
+                    {
+                        name: "MA30",
+                        type: "line",
+                        data: calculateEMA(30, data),
                         smooth: true,
                         showSymbol: false,
                         lineStyle: {
