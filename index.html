@@ -81,9 +81,9 @@
                 animation: false,
                 legend: {
                     top: "2%",
-                    data: ["K", "MA60","CC", "MA5", "MA12"],
+                    data: ["K", "MA60","HH", "LL","CC", "MA5", "MA12"],
                     selected: {
-                        CC: true,
+                        CC: false,
 
                         MA5: true,
                         MA12: false
@@ -339,25 +339,23 @@
                         }
                     },
                     {
-                        name: "0.5atr",
+                        name: "HH",
                         type: "line",
-                        data: calculateByATR(60, data, 15, 0.5),
+                        data: dc.hh,
                         smooth: true,
                         showSymbol: false,
                         lineStyle: {
-                            width: 1,
-                            color: "rgb(51, 51, 51)"
+                            width: 2
                         }
                     },
                     {
-                        name: "-0.5atr",
+                        name: "LL",
                         type: "line",
-                        data: calculateByATR(60, data, 15, -0.5),
+                        data: dc.ll,
                         smooth: true,
                         showSymbol: false,
                         lineStyle: {
-                            width: 1,
-                            color: "rgb(51, 51, 51)"
+                            width: 2
                         }
                     },
                     {
